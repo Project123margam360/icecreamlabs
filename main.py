@@ -3,6 +3,16 @@ from flask import Flask, send_from_directory
 app = Flask(__name__)
 
 
+@app.route("/")
+def home():
+    return send_from_directory(app.root_path, "commingsoonpage.html")
+
+
+@app.route("/comingsoon")
+def comingsoon_alias():
+    return send_from_directory(app.root_path, "commingsoonpage.html")
+
+
 @app.route("/commingsoon")
 def commingsoon():
     return send_from_directory(app.root_path, "commingsoonpage.html")
