@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ICE CREAM LABS | Section Slideshow</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream-0: #fffefd;
+      --cream-1: #f6f7f9;
+      --cream-2: #eceff4;
+      --ink: #173244;
+      --ink-soft: rgba(23, 50, 68, 0.64);
+      --brand-blue: #28a4d8;
+      --brand-pink: #ea5b97;
+      --line: rgba(40, 164, 216, 0.3);
+      --glow-blue: rgba(108, 206, 245, 0.45);
+      --shadow: 0 18px 34px rgba(18, 59, 82, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: "Inter", "Segoe UI Variable", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(140% 90% at 50% 8%, #ffffff 0%, #f4f9fc 50%, #eaf0f6 100%);
+      color: var(--ink);
+    }
+
+    .viewport {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .screen {
+      width: 1920px;
+      height: 1080px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-origin: top left;
+      isolation: isolate;
+      overflow: hidden;
+      padding: 28px 34px 22px;
+      background:
+        radial-gradient(62% 40% at 50% 16%, rgba(116, 211, 244, 0.72) 0%, rgba(169, 228, 247, 0.24) 52%, rgba(199, 237, 250, 0) 100%),
+        radial-gradient(36% 28% at 74% 24%, rgba(244, 132, 188, 0.48) 0%, rgba(244, 170, 205, 0.12) 58%, rgba(244, 170, 205, 0) 100%),
+        radial-gradient(30% 22% at 28% 72%, rgba(123, 200, 237, 0.34) 0%, rgba(123, 200, 237, 0) 100%),
+        linear-gradient(165deg, var(--cream-0) 0%, var(--cream-1) 52%, var(--cream-2) 100%);
+    }
+
+    .screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.11)),
+        repeating-linear-gradient(45deg, rgba(40, 164, 216, 0.02) 0, rgba(40, 164, 216, 0.02) 1px, transparent 1px, transparent 5px);
+      opacity: 0.72;
+    }
+
+    .screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 56%, rgba(15, 39, 59, 0.18) 100%);
+    }
+
+    #waveCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.98;
+    }
+
+    .ui {
+      position: relative;
+      z-index: 4;
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 200px 1fr 350px;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 6px 14px;
+      border-bottom: 1px solid var(--line);
+      animation: fadeRise 0.8s ease-out both;
+    }
+
+    .logo {
+      width: 168px;
+      filter: drop-shadow(0 8px 14px rgba(33, 126, 170, 0.18));
+      animation: logoBob 6.2s ease-in-out 1s infinite;
+    }
+
+    .head {
+      text-align: center;
+    }
+
+    .kicker {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--brand-blue);
+    }
+
+    .title {
+      margin: 2px 0;
+      font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+      font-size: 68px;
+      line-height: 0.95;
+      color: #144462;
+      text-shadow:
+        0 0 1px rgba(255, 255, 255, 0.94),
+        0 10px 24px rgba(22, 90, 124, 0.16),
+        0 0 24px var(--glow-blue);
+    }
+
+    .sub {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .delivery {
+      justify-self: end;
+      max-width: 340px;
+      width: 100%;
+      text-align: right;
+      padding: 8px 2px;
+      color: #1f6f95;
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .stage {
+      position: relative;
+      overflow: hidden;
+      padding: 8px 2px;
+    }
+
+    .slides {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 34px;
+      opacity: 0;
+      transform: translateX(7%) scale(0.98) rotate(0.2deg);
+      filter: blur(10px);
+      transition:
+        opacity 900ms cubic-bezier(0.22, 0.65, 0.2, 1),
+        transform 900ms cubic-bezier(0.22, 0.65, 0.2, 1),
+        filter 900ms cubic-bezier(0.22, 0.65, 0.2, 1);
+      pointer-events: none;
+      padding: 18px 14px 74px;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1) rotate(0deg);
+      filter: blur(0);
+      pointer-events: auto;
+    }
+
+    .panel {
+      padding: 6px 6px 0;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .panel .step {
+      margin: 0;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--brand-blue);
+      font-weight: 800;
+    }
+
+    .panel h2 {
+      margin: 8px 0 14px;
+      font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+      font-size: 62px;
+      line-height: 0.95;
+      color: #173244;
+    }
+
+    .panel p {
+      margin: 0 0 12px;
+      color: var(--ink-soft);
+      font-size: 20px;
+      line-height: 1.4;
+    }
+
+    .menu-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: end;
+      padding-bottom: 10px;
+      border-bottom: 1px dotted rgba(23, 50, 68, 0.34);
+      animation: itemRise 450ms ease both;
+    }
+
+    .item > div:first-child {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      column-gap: 12px;
+      align-items: start;
+    }
+
+    .item > div:first-child::before {
+      content: "";
+      width: 64px;
+      height: 64px;
+      margin-top: 0;
+      background-image: url("images/ice cream labs logo.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.95;
+      filter: drop-shadow(0 1px 3px rgba(17, 75, 101, 0.18));
+    }
+
+    .active .item:nth-child(1) { animation-delay: 120ms; }
+    .active .item:nth-child(2) { animation-delay: 200ms; }
+    .active .item:nth-child(3) { animation-delay: 280ms; }
+    .active .item:nth-child(4) { animation-delay: 360ms; }
+
+    .item-name {
+      grid-column: 2;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 800;
+      color: #173244;
+    }
+
+    .item-desc {
+      grid-column: 2;
+      margin-top: 2px;
+      font-size: 17px;
+      line-height: 1.2;
+      color: var(--ink-soft);
+    }
+
+    .item-price {
+      white-space: nowrap;
+      font-size: 38px;
+      line-height: 0.95;
+      font-weight: 800;
+      color: #1f6f95;
+      text-shadow: 0 0 12px rgba(108, 206, 245, 0.2);
+    }
+
+    .slide-note {
+      margin-top: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #35627c;
+      font-weight: 700;
+    }
+
+    .media {
+      padding: 6px 0 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .media .chip {
+      justify-self: start;
+      color: #1d678c;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0;
+    }
+
+    .hero {
+      border-radius: 16px;
+      overflow: hidden;
+      border: none;
+      box-shadow: none;
+      position: relative;
+      min-height: 0;
+      background: transparent;
+    }
+
+    .hero-frame {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 900ms ease;
+    }
+
+    .hero-frame.active {
+      opacity: 1;
+    }
+
+    .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: transparent;
+      padding: 8px;
+      transform: scale(1.03);
+      transition: transform 1200ms ease;
+    }
+
+    .slide.active .hero img {
+      transform: scale(1.09);
+    }
+
+    .hero .tag {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #173244;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      text-align: center;
+      color: #2d5d77;
+      font-size: 19px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    @keyframes fadeRise {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes itemRise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes logoBob {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="viewport">
+    <main class="screen" id="screen" aria-label="Ice cream slideshow menu">
+      <canvas id="waveCanvas" aria-hidden="true"></canvas>
+
+      <section class="ui">
+        <header class="topbar">
+          <img class="logo" src="images/ice cream labs logo.png" alt="ICE CREAM LABS logo">
+
+          <div class="head">
+            <p class="kicker">Interactive Slideshow Menu</p>
+            <h1 class="title">Create Your Ice Cream</h1>
+            <p class="sub">Each Section Is Its Own Page</p>
+          </div>
+
+          <div class="delivery">Delivery: +3432 2323 300<br>www.website.com</div>
+        </header>
+
+        <section class="stage" aria-label="Subsection slides">
+          <div class="slides" id="slidesRoot">
+            <article class="slide active" data-index="0">
+              <section class="panel">
+                <p class="step">Step 1 . Select Scoops</p>
+                <h2>Signature Scoops</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer placerat sem a lacus interdum posuere.</p>
+
+                <ul class="menu-list">
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Lorem ipsum dolor sit amet.</div></div><div class="item-price">$3.99</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Sed do eiusmod tempor incididunt.</div></div><div class="item-price">$6.49</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Ut enim ad minim veniam.</div></div><div class="item-price">$8.49</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Duis aute irure dolor in voluptate.</div></div><div class="item-price">$9.25</div></li>
+                </ul>
+
+                <div class="slide-note">Freshly churned every morning</div>
+              </section>
+
+              <aside class="media">
+                <span class="chip">Most Popular</span>
+                <figure class="hero" data-hero-slideshow>
+                  <img class="hero-frame active" src="images/delicious-raspberry-chocolate-ice-cream-sundae-removebg-preview.png" alt="Sundae placeholder">
+                  <img class="hero-frame" src="images/scoops-removebg-preview.png" alt="Sundae placeholder">
+                  <img class="hero-frame" src="images/strawberry-removebg-preview.png" alt="Sundae placeholder">
+                  <span class="tag">Featured</span>
+                </figure>
+              </aside>
+            </article>
+
+            <article class="slide" data-index="1">
+              <section class="panel">
+                <p class="step">Step 2 . Select Cone</p>
+                <h2>Cone Studio</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam lobortis est et metus varius feugiat.</p>
+
+                <ul class="menu-list">
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Plain waffle cone placeholder.</div></div><div class="item-price">$0.00</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Chocolate dipped cone placeholder.</div></div><div class="item-price">$1.00</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Sprinkles rim cone placeholder.</div></div><div class="item-price">$1.50</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Premium waffle bowl placeholder.</div></div><div class="item-price">$2.00</div></li>
+                </ul>
+
+                <div class="slide-note">Crispy . Fresh . Baked Daily</div>
+              </section>
+
+              <aside class="media">
+                <span class="chip">Cone Choices</span>
+                <figure class="hero" data-hero-slideshow>
+                  <img class="hero-frame active" src="images/cone-removebg-preview.png" alt="Cone placeholder">
+                  <img class="hero-frame" src="images/png-clipart-ice-cream-milkshake-sundae-banana-removebg-preview.png" alt="Cone placeholder">
+                  <img class="hero-frame" src="images/delicious-chocolate-brownie-ice-cream-sundae-dessert-removebg-preview.png" alt="Cone placeholder">
+                  <span class="tag">Classic</span>
+                </figure>
+              </aside>
+            </article>
+
+            <article class="slide" data-index="2">
+              <section class="panel">
+                <p class="step">Step 3 . Select Toppings</p>
+                <h2>Topping Lab</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas elementum, magna at commodo bibendum.</p>
+
+                <ul class="menu-list">
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Roasted nuts placeholder topping.</div></div><div class="item-price">$0.50</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Brownie bites placeholder topping.</div></div><div class="item-price">$0.75</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Popping boba placeholder topping.</div></div><div class="item-price">$0.75</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Cookie crumble placeholder topping.</div></div><div class="item-price">$0.75</div></li>
+                </ul>
+
+                <div class="slide-note">Mix crunch and premium toppings</div>
+              </section>
+
+              <aside class="media">
+                <span class="chip">Topping Picks</span>
+                <figure class="hero" data-hero-slideshow>
+                  <img class="hero-frame active" src="images/bubbletea-removebg-preview.png" alt="Topping placeholder">
+                  <img class="hero-frame" src="images/bubbletea2-removebg-preview.png" alt="Topping placeholder">
+                  <img class="hero-frame" src="images/juice-removebg-preview.png" alt="Topping placeholder">
+                  <span class="tag">Crunch</span>
+                </figure>
+              </aside>
+            </article>
+
+            <article class="slide" data-index="3">
+              <section class="panel">
+                <p class="step">Step 4 . Drinks & Extras</p>
+                <h2>Drink Pairings</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed lorem ac purus feugiat bibendum.</p>
+
+                <ul class="menu-list">
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Thickshake placeholder pairing.</div></div><div class="item-price">$4.50</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Falooda placeholder pairing.</div></div><div class="item-price">$4.75</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Berry smoothie placeholder pairing.</div></div><div class="item-price">$5.00</div></li>
+                  <li class="item"><div><div class="item-name">Lorem Ipsum</div><div class="item-desc">Signature cooler placeholder pairing.</div></div><div class="item-price">$5.25</div></li>
+                </ul>
+
+                <div class="slide-note">Complete your order with a cool drink</div>
+              </section>
+
+              <aside class="media">
+                <span class="chip">Pairing Ideas</span>
+                <figure class="hero" data-hero-slideshow>
+                  <img class="hero-frame active" src="images/thickshake-removebg-preview.png" alt="Drink placeholder">
+                  <img class="hero-frame" src="images/falooda-white-background_679658-3663-removebg-preview.png" alt="Drink placeholder">
+                  <img class="hero-frame" src="images/pngtree-falooda-drink-beverage-isolated-on-transparent-background-png-image-removebg-preview.png" alt="Drink placeholder">
+                  <span class="tag">Refreshing</span>
+                </figure>
+              </aside>
+            </article>
+          </div>
+
+        </section>
+
+        <footer class="footer">Fresh . Premium . Made Daily . Slide Show Menu Experience</footer>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const screen = document.getElementById("screen");
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      const canvas = document.getElementById("waveCanvas");
+      if (!screen || !slides.length || !canvas) return;
+      const heroSlideshows = Array.from(document.querySelectorAll("[data-hero-slideshow]"));
+
+      const designWidth = 1920;
+      const designHeight = 1080;
+      let active = 0;
+      let timer = null;
+
+      function fitStage() {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const scale = Math.min(vw / designWidth, vh / designHeight);
+        const x = (vw - designWidth * scale) / 2;
+        const y = (vh - designHeight * scale) / 2;
+        screen.style.transform = "translate(" + x + "px, " + y + "px) scale(" + scale + ")";
+      }
+
+      function show(index, restart) {
+        active = (index + slides.length) % slides.length;
+        slides.forEach((slide, i) => {
+          slide.classList.toggle("active", i === active);
+        });
+        if (restart) startAuto();
+      }
+
+      function startAuto() {
+        if (timer) window.clearInterval(timer);
+        timer = window.setInterval(() => show(active + 1, false), 15000);
+      }
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") show(active + 1, true);
+        if (e.key === "ArrowLeft") show(active - 1, true);
+      });
+
+      // Live wave background
+      const ctx = canvas.getContext("2d");
+      let t = 0;
+      function resizeCanvas() {
+        canvas.width = designWidth;
+        canvas.height = designHeight;
+      }
+
+      function drawWave(amplitude, frequency, speed, color, yOffset, phase) {
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height);
+        for (let x = 0; x <= canvas.width; x += 6) {
+          const y = yOffset + Math.sin(x * frequency + t * speed + phase) * amplitude;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
+
+      function animateWaves() {
+        t += 0.025;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawWave(54, 0.0085, 1.9, "rgba(40, 164, 216, 0.16)", 740, 0);
+        drawWave(68, 0.0068, 1.35, "rgba(108, 206, 245, 0.20)", 800, 1.4);
+        drawWave(44, 0.0105, 2.2, "rgba(234, 91, 151, 0.12)", 700, 2.2);
+        drawWave(34, 0.012, 2.5, "rgba(40, 164, 216, 0.1)", 845, 2.9);
+
+        requestAnimationFrame(animateWaves);
+      }
+
+      function startHeroSlideshows() {
+        heroSlideshows.forEach((hero) => {
+          const frames = Array.from(hero.querySelectorAll(".hero-frame"));
+          if (frames.length < 2) return;
+          let idx = 0;
+          window.setInterval(() => {
+            idx = (idx + 1) % frames.length;
+            frames.forEach((frame, i) => {
+              frame.classList.toggle("active", i === idx);
+            });
+          }, 3500);
+        });
+      }
+
+      window.addEventListener("resize", fitStage);
+      resizeCanvas();
+      fitStage();
+      startAuto();
+      animateWaves();
+      startHeroSlideshows();
+    })();
+  </script>
+</body>
+</html>
