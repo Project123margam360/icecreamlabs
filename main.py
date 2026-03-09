@@ -1,6 +1,8 @@
 from flask import Flask, send_from_directory
+from pathlib import Path
 
 app = Flask(__name__)
+IMAGES_DIR = Path(app.root_path) / "images"
 
 
 @app.route("/")
@@ -22,6 +24,11 @@ def commingsoon():
 def design1():
     # Serves the existing file in the workspace.
     return send_from_directory(app.root_path, "icecream-slideshow-sections-tv.html")
+
+
+@app.route("/images/<path:filename>")
+def images(filename):
+    return send_from_directory(IMAGES_DIR, filename)
 
 
 if __name__ == "__main__":
